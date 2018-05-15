@@ -19,10 +19,13 @@ class MainActivity : AppCompatActivity() {
     private var mRecyclerView: RecyclerView? = null
     private var mAdapter: WordListAdapter? = null
 
+    private var mDB: WordListOpenHelper? = null
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mDB = WordListOpenHelper(this)
 
         // Create recycler view.
         mRecyclerView = findViewById(R.id.recyclerview) as RecyclerView
