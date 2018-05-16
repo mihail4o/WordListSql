@@ -139,7 +139,7 @@ class WordListOpenHelper(context:Context) : SQLiteOpenHelper(context, DATABASE_N
                 mWritableDB = writableDatabase
             }
 
-            deleted = mWritableDB.delete(WORD_LIST_TABLE,
+            deleted = mWritableDB!!.delete(WORD_LIST_TABLE,
                     KEY_ID + " = ? ", arrayOf(id.toString()))
 
         } catch (e: Exception) {
