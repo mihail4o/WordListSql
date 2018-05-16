@@ -50,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        val id = data.getIntExtra(WordListAdapter.EXTRA_ID, -99)
+
         // Add code to update the database.
         if (requestCode === WORD_EDIT)
         {
@@ -60,12 +62,14 @@ class MainActivity : AppCompatActivity() {
                 // Update the database
                 if (!TextUtils.isEmpty(word))
                 {
-                    val id = data.getIntExtra(WordListAdapter.EXTRA_ID, -99)
                     if (id == WORD_ADD)
                     {
                         mDB!!.insert(word)
                     }
-
+                    // Update "Edit" word
+                    else if (id >= 0) {
+                        mDB!!.update(id, word)
+                    }
                     // Update the UI
                     mAdapter!!.notifyDataSetChanged()
                 }

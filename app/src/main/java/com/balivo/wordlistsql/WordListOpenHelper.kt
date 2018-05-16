@@ -147,4 +147,25 @@ class WordListOpenHelper(context:Context) : SQLiteOpenHelper(context, DATABASE_N
         }
         return deleted
     }
+
+    fun update(id:Int, word:String):Int {
+        var mNumberOfRowsUpdated = -1
+        try
+        {
+            if (mWritableDB == null)
+            {
+                mWritableDB = getWritableDatabase()
+            }
+            val values = ContentValues()
+            values.put(KEY_WORD, word)
+            mNumberOfRowsUpdated = mWritableDB!!.update(WORD_LIST_TABLE,
+                    values,
+                    KEY_ID + " = ?",
+                    arrayOf<String>((id).toString()))
+        }
+        catch (e:Exception) {
+            Log.d(TAG, "UPDATE EXCEPTION! " + e.message)
+        }
+        return mNumberOfRowsUpdated
+    }
 }

@@ -1,9 +1,10 @@
 package com.balivo.wordlistsql
 
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,12 +47,32 @@ class WordListAdapter(internal var mContext: Context, db : WordListOpenHelper) :
     }
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        val isMDB = mDB!=null
-        Log.i("BALIVO", "mDB != null:" + isMDB)
-        val current = mDB.query(position) as WordItem
-        val isCurrent = current!=null
-        Log.i("BALIVO", "current != null:" + isCurrent)
-        holder.wordItemView.text = current!!.mWord
+
+       val current = mDB.query(position)
+       holder.wordItemView.text = current!!.mWord
+
+        val h = holder // needs to be final for use in callback
+        holder.delete_button.setOnClickListener(
+                object:MyButtonOnClickListener(current.mId!!, null) {
+                    override fun onClick(v:View) {
+                        val deleted = mDB.delete(id)
+                        if (deleted >= 0)
+                            notifyItemRemoved(h.getAdapterPosition())
+                    }
+                })
+
+        holder.edit_button.setOnClickListener(object:MyButtonOnClickListener(
+                current.mId as Int, current.mWord) {
+            override fun onClick(v:View) {
+                val intent = Intent(mContext, EditWordActivity::class.java)
+                intent.putExtra(EXTRA_ID, id)
+                intent.putExtra(EXTRA_POSITION, h.getAdapterPosition())
+                intent.putExtra(EXTRA_WORD, word)
+                // Start an empty edit activity.
+                (mContext as Activity).startActivityForResult(
+                        intent, MainActivity.WORD_EDIT)
+            }
+        })
     }
 
     override fun getItemCount(): Int {
@@ -64,5 +85,6 @@ class WordListAdapter(internal var mContext: Context, db : WordListOpenHelper) :
 
         val EXTRA_ID = "ID"
         val EXTRA_WORD = "WORD"
+        val EXTRA_POSITION = "POSITION"
     }
 }
