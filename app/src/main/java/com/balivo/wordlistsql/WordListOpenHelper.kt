@@ -7,6 +7,9 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import java.nio.file.Files.delete
+
+
 
 
 
@@ -125,5 +128,23 @@ class WordListOpenHelper(context:Context) : SQLiteOpenHelper(context, DATABASE_N
             mReadableDB = getReadableDatabase()
         }
         return DatabaseUtils.queryNumEntries(mReadableDB, WORD_LIST_TABLE)
+    }
+
+    fun delete(id: Int): Int {
+
+        var deleted = 0
+
+        try {
+            if (mWritableDB == null) {
+                mWritableDB = writableDatabase
+            }
+
+            deleted = mWritableDB.delete(WORD_LIST_TABLE,
+                    KEY_ID + " = ? ", arrayOf(id.toString()))
+
+        } catch (e: Exception) {
+            Log.d (TAG, "DELETE EXCEPTION! " + e.message)
+        }
+        return deleted
     }
 }
