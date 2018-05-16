@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         // Create recycler view.
         mRecyclerView = findViewById(R.id.recyclerview) as RecyclerView
         // Create an mAdapter and supply the data to be displayed.
-        mAdapter = WordListAdapter(this)
+        mAdapter = WordListAdapter(this, mDB!!)
         // Connect the mAdapter with the recycler view.
         mRecyclerView!!.setAdapter(mAdapter)
         // Give the recycler view a default layout manager.

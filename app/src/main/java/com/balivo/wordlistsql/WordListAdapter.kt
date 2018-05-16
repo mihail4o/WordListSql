@@ -3,6 +3,7 @@ package com.balivo.wordlistsql
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +14,9 @@ import android.widget.TextView
  * Implements a simple Adapter for a RecyclerView.
  * Demonstrates how to add a click handler for each item in the ViewHolder.
  */
-class WordListAdapter(internal var mContext: Context) : RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
+class WordListAdapter(internal var mContext: Context, db : WordListOpenHelper) : RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
 
-
+    private var mDB : WordListOpenHelper
 
     private val mInflater: LayoutInflater
 
@@ -36,6 +37,7 @@ class WordListAdapter(internal var mContext: Context) : RecyclerView.Adapter<Wor
 
     init {
         mInflater = LayoutInflater.from(mContext)
+        this.mDB = db
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
@@ -44,7 +46,12 @@ class WordListAdapter(internal var mContext: Context) : RecyclerView.Adapter<Wor
     }
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-        holder.wordItemView.text = "placeholder"
+        val isMDB = mDB!=null
+        Log.i("BALIVO", "mDB != null:" + isMDB)
+        val current = mDB.query(position) as WordItem
+        val isCurrent = current!=null
+        Log.i("BALIVO", "current != null:" + isCurrent)
+        holder.wordItemView.text = current!!.mWord
     }
 
     override fun getItemCount(): Int {
