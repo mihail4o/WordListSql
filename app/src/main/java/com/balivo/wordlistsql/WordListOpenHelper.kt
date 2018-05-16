@@ -3,9 +3,14 @@ package com.balivo.wordlistsql
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+
+
+
+
 
 
 // It's a good idea to always define a log tag like this.
@@ -32,7 +37,7 @@ private const val WORD_LIST_TABLE_CREATE =
 
 class WordListOpenHelper(context:Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    private val mWritableDB: SQLiteDatabase? = null
+    private var mWritableDB: SQLiteDatabase? = null
     private var mReadableDB: SQLiteDatabase? = null
 
 
@@ -91,5 +96,34 @@ class WordListOpenHelper(context:Context) : SQLiteOpenHelper(context, DATABASE_N
             cursor!!.close()
             return entry
         }
+    }
+
+    fun insert(word: String): Long {
+
+        var newId: Long = 0
+
+        val values = ContentValues()
+        values.put(KEY_WORD, word)
+
+        try {
+
+            if (mWritableDB == null) {
+                mWritableDB = writableDatabase
+            }
+
+            newId = mWritableDB!!.insert(WORD_LIST_TABLE, null, values);
+
+        } catch (e: Exception) {
+            Log.d(TAG, "INSERT EXCEPTION! " + e.message)
+        }
+        return newId
+    }
+
+    fun count():Long {
+        if (mReadableDB == null)
+        {
+            mReadableDB = getReadableDatabase()
+        }
+        return DatabaseUtils.queryNumEntries(mReadableDB, WORD_LIST_TABLE)
     }
 }

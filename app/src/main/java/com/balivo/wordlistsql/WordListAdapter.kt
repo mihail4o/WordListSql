@@ -55,7 +55,7 @@ class WordListAdapter(internal var mContext: Context, db : WordListOpenHelper) :
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return mDB.count().toInt()
     }
 
     companion object {

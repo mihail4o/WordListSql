@@ -6,7 +6,9 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.View
+import android.widget.Toast
 
 /**
  * Implements a RecyclerView that displays a list of words from a SQL database.
@@ -47,7 +49,35 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
+
         // Add code to update the database.
+        if (requestCode === WORD_EDIT)
+        {
+            if (resultCode === RESULT_OK)
+            {
+                val word = data.getStringExtra(EditWordActivity.EXTRA_REPLY)
+
+                // Update the database
+                if (!TextUtils.isEmpty(word))
+                {
+                    val id = data.getIntExtra(WordListAdapter.EXTRA_ID, -99)
+                    if (id == WORD_ADD)
+                    {
+                        mDB!!.insert(word)
+                    }
+
+                    // Update the UI
+                    mAdapter!!.notifyDataSetChanged()
+                }
+                else
+                {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            R.string.empty_not_saved,
+                            Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     companion object {
